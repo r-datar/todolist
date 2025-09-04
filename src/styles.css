@@ -1,0 +1,168 @@
+body{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.page {
+    width: 100%; 
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.head{
+    font-size: 30px;
+    text-decoration: underline;
+
+    display: flex;
+    width: 100%;
+    align-content: center;
+    justify-content: center;
+}
+
+.bottom {
+    width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.left {
+    width: 20%;
+    background-color: #E4EFE7;
+    padding: 7px 11px;
+    
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.all-projects {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.project {
+    font-size: 20px;
+} 
+.add-project {
+
+    font-size: 16px;
+    text-decoration: dotted;
+
+    display: flex;
+    justify-content: left;
+}
+
+div.add-project > span {
+    font-weight: bold;
+}
+.content {
+    
+    width: 80%;
+    height: 70vh;
+    overflow: auto;
+    border-color: darkgrey;
+    border-style:dashed;
+    padding: 7px 11px;
+    font-size: 24px;
+
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+}
+
+input {
+font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.todo-details{
+    margin-left: 70px;
+    font-size: 16px;
+}
+
+.project-name {
+    width: 80%;
+    height: 40px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    outline: none;
+    font-size: 24px;
+
+}
+
+input {
+    width: 60%;
+    height: 40px;
+    border: none;
+    padding: 0px;
+    margin-left: 50px;
+    outline: darkorchid;
+    font-size:16px;
+}
+
+.desc {
+    width: 40%;
+}
+
+label {
+    font-size:14px;
+    color: #99BC85;
+}
+
+.todo-details > input {
+    margin-left: 20px;
+}
+
+button:hover {
+    background-color: #99BC85;
+    border-color: darkgray;
+}
+
+.input-add-todo-title {
+    color: #99BC85;
+}
+
+.input-add-todo-title:focus {
+    color: #000;
+}
+
+.contain-todo-details {
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+    align-items: center;
+    gap:20px;
+
+    border-color: aquamarine;
+    border-style: solid;
+    border-width: 1px;
+    margin-left: 80px;
+}
+
+.todo-delete-button {
+    height : 25px;
+}
+
+.todo-date-input {
+    width : 110px;
+    margin-left: 5px;
+}
+
+.tododesc-input {
+    margin : 10px;
+    width: 110px;
+}
+
+.todopriority-select {
+    padding: 2px;
+}
+
+label {
+    margin-left: 20px;
+}
