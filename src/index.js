@@ -9,16 +9,17 @@ import { initEvents } from "./events";
 import AllProjects from "./allProjects";
 
 const allProjects = new AllProjects();
-// Get stored projects in memory
+// Get projects stored in memory
 let listProjects = getProjects();
 if(listProjects.projects) {
+    //Populate allProjects
     listProjects.projects.forEach((element) => {
         
-    const tempProject = new Project(element.title, element.id);
-    element.todos.forEach(todo => {
-        const tempTodo = new Todo(todo.id,todo.title, todo.description, todo.duedate, todo.priority);
-        tempProject.addTodo(tempTodo);    
-    });
+        const tempProject = new Project(element.title, element.id);
+        element.todos.forEach(todo => {
+            const tempTodo = new Todo(todo.id,todo.title, todo.description, todo.duedate, todo.priority);
+            tempProject.addTodo(tempTodo);    
+        });
     
         allProjects.addProject(tempProject);  
     });

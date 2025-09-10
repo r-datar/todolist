@@ -3,14 +3,15 @@ import Todo from "./todo";
 
 // Show default project 
 const projects_div = document.querySelector("div.all-projects");
-const add_todo_input = document.querySelector(".add-todo-title");
+const add_todo_input = document.querySelector("#add-todo");
+const projectContainer = document.getElementById("project-container");
+
 const todoPriority = {"Low": "Low","Medium" : "Medium","High":"High"}; 
 
 
+//Function to display all projects in left sidebar
 export const displayAllProjects = (allProjects) => {
-        //console.log('in displayAllProjects, ',allProjects)
-        
-        //reset 
+        //reset display 
         projects_div.innerHTML = "";
         if(allProjects.projects.length > 0) {
             allProjects.projects.forEach((element) => {
@@ -21,6 +22,7 @@ export const displayAllProjects = (allProjects) => {
         }    
 }
 
+//Function to display a single project in left sidebar
 function displaySingleProject(key, value) {
     var projects_div_list = document.createElement("div");
     projects_div_list.className = `project`;
@@ -30,76 +32,58 @@ function displaySingleProject(key, value) {
     projects_div.appendChild(projects_div_list);
 }
 
+//Function to display project title in main section
 export function displayProjectTitle(targetId, targetText) {
-    
-    //function called from event or directly
-    const projectID = targetId.includes("-") ? getProjectIDFromTargetID(targetId) : targetId;
-
-    let currProjID = projectID;
     
     var project_title = document.createElement("input");
     project_title.className = "project-title";
     project_title.type = "text";
-    project_title.name = "project_name";
+    project_title.name = "project_title";
     project_title.id = targetId;
     project_title.value = targetText;
     
-    let projectContainer = document.getElementById("project-container");
     projectContainer.appendChild(project_title);
 }
 
-export function displayProjectTodos(targetId, allProjects) {
-    const projectID = targetId.includes("-") ? getProjectIDFromTargetID(targetId) : targetId;
-    //console.log(projectID);
-    if(projectID) {
-        let i = allProjects.projects.findIndex(element => element.id == projectID);
-        if( i >= 0 ) {
-            let todoListDiv = document.querySelector(".todo-list");
-            allProjects.projects[i].todos.forEach(element => {
-                //console.log(element);
-                
-                createTodoWrapper(todoListDiv,element.id,projectID);
-                let elementID = `container-todo-${element.id}`;
-                //console.log(elementID);
-                let wrapperDiv = document.getElementById(elementID);
-                createTodoTitle(wrapperDiv, element.id, element.title, projectID);
-                createTodoDetailsDiv(wrapperDiv, element, allProjects)
+//Function to display all todos for this project
+export function displayProjectTodos(allProjects) {
+    const projectID = allProjects.getNowShowing();
+    let i = allProjects.getNowShowingIndex();
+
+    let todoListDiv = document.querySelector(".todo-list");
+
+    allProjects.projects[i].todos.forEach(element => {
+        let wrapperDiv = createTodoWrapper(todoListDiv,element.id);
+        
+        createTodoTitle(wrapperDiv, element.id, element.title);
+        createTodoDetailsDiv(wrapperDiv, element, allProjects)
             
-            })
-        }    
-    }
+    })
 }
 
-export function displayAddNewTodo(projID) {
-    clearAddNewTodo()   
-    //projID => project-1757069143210
-    if(projID) {
-        add_todo_input.id = projID;
-        add_todo_input.style = "display : block";
-    }
-    
+//Function to show the add todo div
+export function displayAddNewTodo() {
+    clearAddNewTodo();
+    add_todo_input.style = "display : block";
 }
 
+//Function to clear out the add todo div display
 function clearAddNewTodo() {
-    add_todo_input.id = "";
     add_todo_input.value="";
 }
 
-
+//Function to clear out the main display
 export function clearProjectDetailsDisplay() {
     //reset previous display
     const content_div = document.querySelector("div.project-container");
 
     content_div.innerHTML = "";
-    // if (content_div.hasChildNodes()) {
-    //     content_div.removeChild("input.project_name") ;
-    // }
-
     const  todo_div = document.querySelector(".todo-list");
     todo_div.innerHTML = "";
     
 }
 
+//Function to get project ID
 export function getProjectIDFromTargetID(targetId) {
     // Get the projectID
     let temp = targetId.split("-");    
@@ -107,34 +91,36 @@ export function getProjectIDFromTargetID(targetId) {
     return projectID;
 }
 
+//Function to create a wrapper div for each todo
 function createTodoWrapper(wrapperDiv, todoID) {
     let elementId = `container-` + `todo-` + todoID; 
-    createDivElement(wrapperDiv,"todo-wrapper", elementId);
-    //let titleContainDiv = document.getElementById(elementId);
-
+    return createDivElement(wrapperDiv,"todo-wrapper", elementId);
 }
 
+//Function to display title of todo
 function createTodoTitle(wrapperDiv, todoID, todoTitle) {
     //container for title input element
     let elementId = `title-todo-${todoID}`;
-    createDivElement(wrapperDiv,"todo-title", elementId);
-    let titleContainDiv = document.getElementById(elementId);
+    
+    let titleContainDiv = createDivElement(wrapperDiv,"todo-title", elementId);
 
     //title input element
     elementId = `todotitle-${todoID}`;
     createInputElement(titleContainDiv,"input-todo-title", elementId, "text", todoTitle, "todo_title");
 }
 
+//Function to create hidden details div for each todo
 function createTodoDetailsDiv(wrapperDiv,element,allProjects) {
     let todoID = element.id;
     //container for todo details
     let elementId = `container-todo-details-${todoID}`; 
-    createDivElement(wrapperDiv,"contain-todo-details", elementId,"display:none");
-    let detailsContainDiv =  document.getElementById(elementId);
+    
+    let detailsContainDiv =  createDivElement(wrapperDiv,"contain-todo-details", elementId,"display:none");
     detailsContainDiv.innerHTML = displayTodoDetails(element);
     assignDetailsEventHandlers(todoID,allProjects);
 }
 
+//Function to create details form elements for each todo
 function displayTodoDetails(element) {
     var detailsElements = '';
 
@@ -145,6 +131,7 @@ function displayTodoDetails(element) {
     return detailsElements;
 }
 
+//Function to create form element for todo description
 function displayTodoDescription(todoID, descValue) {
     var inputID = "tododesc-" + todoID;
     
@@ -154,12 +141,14 @@ function displayTodoDescription(todoID, descValue) {
             <input type="text" placeholder="Add description" id=${inputID} class="tododesc-input" value="${descValue}">`;
 }
 
+//Function to create form element for todo date 
 function displayTodoDate(todoID, dateValue) {
     var inputID = "tododate-" + todoID; 
     if(dateValue === undefined) dateValue = '';
     return `<label for=${inputID}>Date</label><input type="date" id=${inputID} class="todo-date-input" value="${dateValue}">`; 
 }
 
+//Function to create form element for todo priority
 function displayTodoPriority(todoID, priorityValue) {
     var inputID = "todopriority-" + todoID;
     
@@ -184,11 +173,14 @@ function displayTodoPriority(todoID, priorityValue) {
 
         return selectString;
 }
+
+//Function to display todo delete button
 function displayTodoDeleteButton(todoID) {
     var btnID = "tododel-" + todoID;
     return `<button type="button" id=${btnID} class="todo-delete-button">Delete</button> `; 
 }
 
+//Function to assign event handlers for todo details form elements
 function assignDetailsEventHandlers(todoID,allProjects) {
     
     let inputElement = `#todotitle-${todoID}`;
@@ -221,47 +213,47 @@ function assignDetailsEventHandlers(todoID,allProjects) {
         updateTodo(todoID,allProjects, event.target.value, "desc");
     });
 
-
+    //handler for todo date change
     let addDateInputElement = document.getElementById(`tododate-${todoID}`);
     addDateInputElement.addEventListener("change",(event) => {
         updateTodo(todoID,allProjects, event.target.value, "date");
     });
 
 
+    //handler for todo priority change
     let addPriorityElement = document.getElementById(`todopriority-${todoID}`);
     addPriorityElement.addEventListener("change",(event) => {
         updateTodo(todoID,allProjects, event.target.value, "priority");
     });
 
+    //handler for todo delete button
     let btnDelete = document.getElementById(`tododel-${todoID}`);
         btnDelete.addEventListener("click",(event) => {
         deleteTodo(todoID, allProjects);
         clearProjectDetailsDisplay();
         let projectID = allProjects.getNowShowing();
-        let projectIndex = allProjects.projects.findIndex(element => element.id == projectID);
-        if(projectIndex < 0) return;
+        let projectIndex = allProjects.getNowShowingIndex();
         displayProjectTitle(projectID, allProjects.projects[projectIndex].title);
-        displayProjectTodos(projectID, allProjects);
-        //requires project-123456
-        let addTodoId = `project-${projectID}`;
-        displayAddNewTodo(addTodoId);
+        displayProjectTodos(allProjects);
+        displayAddNewTodo();
     });
 }
 
 
+//Function to delete todo
 function deleteTodo(todoID, allProjects) {
     let projectID = allProjects.getNowShowing();
-    let projectIndex = allProjects.projects.findIndex(element => element.id == projectID);
-    if(projectIndex < 0) return;
+    let projectIndex = allProjects.getNowShowingIndex();
     allProjects.projects[projectIndex].removeTodo(todoID);    
     saveAllProjects(allProjects);
 
 }
 
+//Function to update todo -- all fields handled
 function updateTodo(todoID, allProjects, changedValue, field) {
     let projectID = allProjects.getNowShowing();
-    let projectIndex = allProjects.projects.findIndex(element => element.id == projectID);
-    if(projectIndex < 0) return;
+    let projectIndex = allProjects.getNowShowingIndex();
+
     let todoIndex = allProjects.projects[projectIndex].todos.findIndex(todo => todo.id == todoID);
     if (todoIndex < 0) return;
 
@@ -271,36 +263,34 @@ function updateTodo(todoID, allProjects, changedValue, field) {
     let priority = allProjects.projects[projectIndex].todos[todoIndex].priority;
 
     switch(field) {
-                            case "title" : title = changedValue;
-                                           break;
-                            case "date"  : duedate = changedValue;
-                                           break;     
-                            case "desc"  : desc = changedValue;
-                                           break;
-                            case "priority" : priority = changedValue   ;
-                                            break;                                           
-                        }
+        case "title" : title = changedValue;
+                        break;
+        case "date"  : duedate = changedValue;
+                        break;     
+        case "desc"  : desc = changedValue;
+                        break;
+        case "priority" : priority = changedValue   ;
+                        break;                                           
+    }
 
 
-        allProjects.projects[projectIndex].todos[todoIndex].editTodo(title, desc, duedate, priority);
-        //console.log(allProjects)
-        saveAllProjects(allProjects);
+    allProjects.projects[projectIndex].todos[todoIndex].editTodo(title, desc, duedate, priority);
+    saveAllProjects(allProjects);
 
 }
 
-
+//Function to create a div element in DOM with attributes
 function createDivElement(parentElement,className, elementId,style) {
     var newDiv;
     newDiv =  document.createElement("div");
     newDiv.className = className;
     newDiv.id = elementId;
-    style != undefined
-        newDiv.style = style;
-    // text != undefined 
-    //     newDiv.innerText = text    
+    if(style) newDiv.style = style;
     parentElement.appendChild(newDiv);
+    return newDiv;
 }
 
+//Function to create a input element in DOM with attributes
 function createInputElement(parentElement,className,elementId,type,elementValue, elementName,placeHolder) {
     var newInput;
     newInput = document.createElement("input");
@@ -308,9 +298,6 @@ function createInputElement(parentElement,className,elementId,type,elementValue,
     newInput.type = type;
     newInput.name = elementName;
     newInput.id = elementId;
-    elementValue !== "" 
-        newInput.value = elementValue;
-    placeHolder != undefined 
-        newInput.placeholder = placeHolder;
+    if(elementValue) newInput.value = elementValue;
     parentElement.appendChild(newInput);
 }
