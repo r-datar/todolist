@@ -1,7 +1,6 @@
 // webpack.config.js
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-import webpack from "webpack";
 
 module.exports = {
   mode: "development",
